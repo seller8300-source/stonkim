@@ -50,7 +50,7 @@ body{background:#eee;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Goth
 .num.done{background:#22c55e;}
 .num.locked{background:#ddd;color:#aaa;}
 .ctitle{font-size:16px;font-weight:700;}
-.csub{font-size:12px;color:#999;margin-top:2px;}
+.csub{font-size:13px;color:#666;margin-top:3px;font-weight:500;}
 
 /* 선택 버튼 */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -345,18 +345,29 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <div class="ch">
         <div class="num locked" id="n2">2</div>
         <div>
-          <div class="ctitle">단가표가 있으신가요?</div>
-          <div class="csub">한 번만 저장하면 이 기기에서 계속 사용 가능</div>
+          <div class="ctitle">어떻게 계산할까요?</div>
+          <div class="csub">방식을 선택하면 바로 시작됩니다</div>
         </div>
       </div>
-      <div class="g2">
-        <div class="yn yes" id="yy" onclick="pickList(true)">
-          <div class="yn-n">예</div>
-          <div class="yn-d">단가표 업로드 후<br>모델명으로 계산</div>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px;">
+        <div class="opt-fast" id="yn" onclick="pickList(false)" style="padding:18px 16px;border:2px solid #e55a1c;border-radius:14px;background:#fff3ee;cursor:pointer;position:relative;transition:all .15s;">
+          <div style="position:absolute;top:-9px;left:16px;background:#e55a1c;color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;">초간단 · 빠름</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-size:26px;">⚡</div>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:#e55a1c;">빠른 계산</div>
+              <div style="font-size:12px;color:#9a4a28;margin-top:2px;font-weight:500;">자재 사이즈만 입력하면 끝</div>
+            </div>
+          </div>
         </div>
-        <div class="yn no" id="yn" onclick="pickList(false)">
-          <div class="yn-n">아니오</div>
-          <div class="yn-d">사이즈·단가<br>직접 입력</div>
+        <div class="opt-list" id="yy" onclick="pickList(true)" style="padding:18px 16px;border:2px solid #e0e0e0;border-radius:14px;background:#fafafa;cursor:pointer;transition:all .15s;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="font-size:26px;">📋</div>
+            <div>
+              <div style="font-size:16px;font-weight:700;color:#444;">내 단가표 등록하기</div>
+              <div style="font-size:12px;color:#777;margin-top:2px;font-weight:500;">한 번 올려두면 AI 기능까지 편하게</div>
+            </div>
+          </div>
         </div>
       </div>
       <button class="back-m" style="margin-top:14px;" onclick="goBack(1)">← 이전으로</button>
