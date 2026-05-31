@@ -545,6 +545,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <div class="quote-field"><input type="text" id="q-tel" placeholder="연락처"></div>
       </div>
       <div class="quote-field quote-field-full"><input type="text" id="q-addr" placeholder="현장 주소"></div>
+      <div class="quote-field quote-field-full"><div style="font-size:11px;color:#888;margin-bottom:4px;font-weight:600;">배송일자 (선택)</div><input type="date" id="q-deliv"></div>
       <div class="quote-field quote-field-full" style="margin-bottom:12px;"><input type="text" id="q-memo" placeholder="메모 (선택)"></div>
       <button class="quote-print" onclick="printQuote()">🖨️ 견적서 출력 / 저장</button>
     </div>
@@ -1255,6 +1256,7 @@ function printQuote(){
   var tel=document.getElementById('q-tel').value||'';
   var addr=document.getElementById('q-addr').value||'';
   var memo=document.getElementById('q-memo').value||'';
+  var deliv=document.getElementById('q-deliv').value||'';
   var lr=getLoss();
   var mult=1+lr/100;
   var tp=cache.details[0].tp;
@@ -1275,8 +1277,6 @@ function printQuote(){
   });
   var today=new Date();
   var dateStr=today.getFullYear()+'.'+(today.getMonth()+1)+'.'+(today.getDate());
-  var validDate=new Date(today.getTime()+30*24*60*60*1000);
-  var validStr=validDate.getFullYear()+'.'+(validDate.getMonth()+1)+'.'+(validDate.getDate());
   loadSettings();
   var co=settings.company||'STONE KIM';
   var rep=settings.rep||'';
@@ -1336,7 +1336,7 @@ function printQuote(){
     +'<tr><td class="lbl">현장주소</td><td>'+(addr||'-')+'</td></tr>'
     +(memo?'<tr><td class="lbl">메모</td><td>'+memo+'</td></tr>':'')
     +'<tr><td class="lbl">견적일자</td><td>'+dateStr+'</td></tr>'
-    +'<tr><td class="lbl">유효기간</td><td>'+validStr+'</td></tr>'
+    +(deliv?'<tr><td class="lbl">배송일자</td><td>'+deliv+'</td></tr>':'')
     +'</table>'
     +'</body></html>';
 
@@ -1366,7 +1366,7 @@ function doRestart(){
   document.getElementById('ln').value=10;
   document.getElementById('lh').textContent='기본 10% · 조절하거나 직접 입력하세요';
   window.scrollTo({top:0,behavior:'smooth'});
-  ['q-name','q-tel','q-addr','q-memo'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['q-name','q-tel','q-addr','q-memo','q-deliv'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   aiPriceTable='';aiHistory=[];
   var am=document.getElementById('ai-msgs');var ex=document.getElementById('ai-ex');
   if(am)am.innerHTML='';
