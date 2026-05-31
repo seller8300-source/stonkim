@@ -1481,6 +1481,7 @@ window.addEventListener('appinstalled',function(){
 });
 
 function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent);}
+function isAndroid(){return /android/i.test(navigator.userAgent);}
 function isStandalone(){
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
 }
@@ -1488,8 +1489,9 @@ function isStandalone(){
 (function(){
   var b=document.getElementById('installBtn');
   if(!b)return;
-  // iOS는 beforeinstallprompt가 없으므로, 이미 설치된 게 아니면 버튼 노출(안내용)
-  if(isIOS() && !isStandalone()){
+  // iOS, 또는 안드로이드(카톡 인앱브라우저 등 prompt 미발생 케이스 포함)에서
+  // 아직 설치 전이면 버튼 노출 → 안내 제공
+  if(!isStandalone() && (isIOS() || isAndroid())){
     b.style.display='inline-block';
   }
 })();
@@ -1506,11 +1508,11 @@ async function installApp(){
   }
   // iOS: 자동 설치 불가 → 안내
   if(isIOS()){
-    alert('홈 화면에 추가하는 방법\n\n1. 하단 공유 버튼(□↑)을 누르세요\n2. "홈 화면에 추가"를 선택하세요\n3. "추가"를 누르면 끝!');
+    alert('📲 홈 화면에 추가하기 (아이폰)\n\n[카카오톡에서 열었다면]\n먼저 화면 우측 아래 ⋯ 메뉴 → "Safari로 열기"를 누르세요.\n\n[Safari에서]\n1. 화면 아래 공유 버튼(□↑)을 누르세요\n2. "홈 화면에 추가"를 선택하세요\n3. "추가"를 누르면 끝!\n\n※ 아이폰은 Safari에서만 가능합니다.');
     return;
   }
-  // 그 외: 브라우저 메뉴 안내
-  alert('브라우저 메뉴에서 "홈 화면에 추가" 또는 "앱 설치"를 선택하세요.');
+  // 안드로이드(카톡 등 인앱 브라우저 포함) / 그 외
+  alert('📲 앱처럼 설치하기 (안드로이드)\n\n[카카오톡에서 열었다면]\n먼저 화면 우측 위 ⋮ 메뉴 → "다른 브라우저로 열기"(Chrome)를 누르세요.\n\n[Chrome에서]\n1. 우측 위 ⋮ 메뉴를 누르세요\n2. "앱 설치" 또는 "홈 화면에 추가"를 선택하세요\n\n※ 카카오톡 내부 화면에서는 설치가 안 됩니다.');
 }
 </script>
 </body>
