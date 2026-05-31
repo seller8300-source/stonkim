@@ -455,6 +455,30 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       </div>
 
       <div id="ca" style="display:none;">
+        <!-- ===== AI에게 바로 물어보기 (단가표 적용 직후) ===== -->
+        <div id="ai-card" style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+            <span style="font-size:16px;">✨</span>
+            <h3 style="font-size:14px;font-weight:700;color:#1e40af;margin:0;">AI에게 바로 물어보세요</h3>
+          </div>
+          <div id="ai-ex" style="display:flex;flex-direction:column;gap:3px;margin-bottom:12px;">
+            <span onclick="aiUseExample(this)" style="font-size:12px;color:#3b82f6;cursor:pointer;">예) "모던그레이01 130헤베 몇 장이야?"</span>
+            <span onclick="aiUseExample(this)" style="font-size:12px;color:#3b82f6;cursor:pointer;">예) "타일3 45헤베 계산해줘"</span>
+            <span onclick="aiUseExample(this)" style="font-size:12px;color:#3b82f6;cursor:pointer;">예) "제일 저렴한 모델이 뭐야?"</span>
+          </div>
+          <div id="ai-msgs" style="max-height:300px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:10px;"></div>
+          <div style="display:flex;gap:8px;">
+            <input id="ai-input" type="text" placeholder="단가표 기반으로 질문하세요..." onkeydown="if(event.key==='Enter')aiSend()" style="flex:1;padding:12px 14px;background:#fff;border:1.5px solid #bfdbfe;border-radius:10px;color:#111;font-size:14px;outline:none;">
+            <button onclick="aiSend()" style="padding:0 20px;background:#3b82f6;border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:13px;">전송</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="flex:1;height:1px;background:#eee;"></div>
+          <span style="font-size:11px;color:#bbb;font-weight:600;">또는 직접 선택해서 계산</span>
+          <div style="flex:1;height:1px;background:#eee;"></div>
+        </div>
+
         <div class="f">
           <div class="lb">모델 선택</div>
           <select id="ms" onchange="onMs()"><option value="">모델 선택...</option></select>
@@ -511,27 +535,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <div class="quote-field quote-field-full"><input type="text" id="q-addr" placeholder="현장 주소"></div>
       <div class="quote-field quote-field-full" style="margin-bottom:12px;"><input type="text" id="q-memo" placeholder="메모 (선택)"></div>
       <button class="quote-print" onclick="printQuote()">🖨️ 견적서 출력 / 저장</button>
-    </div>
-
-    <!-- ===== AI 견적 상담 (계산 결과 바로 아래) ===== -->
-    <div id="ai-card" style="background:#1c1c1e;border:1px solid #2c2c2e;border-radius:14px;padding:18px;margin-top:14px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-        <span style="font-size:18px;">💬</span>
-        <h3 style="font-size:15px;font-weight:700;color:#fff;margin:0;">이 단가표로 AI에게 물어보기</h3>
-      </div>
-      <p style="font-size:12px;color:#8a8a8a;margin:0 0 14px;">방금 적용한 단가표를 기준으로 AI가 견적을 계산해드립니다.</p>
-      <div id="ai-chat">
-        <div id="ai-ex" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;">
-          <span onclick="aiUseExample(this)" style="font-size:12px;background:#2c2c2e;border:1px solid #3a3a3c;border-radius:20px;padding:6px 12px;cursor:pointer;color:#bbb;">600x1200 100장이면 얼마야?</span>
-          <span onclick="aiUseExample(this)" style="font-size:12px;background:#2c2c2e;border:1px solid #3a3a3c;border-radius:20px;padding:6px 12px;cursor:pointer;color:#bbb;">30평 시공하면 자재비 대략 얼마?</span>
-          <span onclick="aiUseExample(this)" style="font-size:12px;background:#2c2c2e;border:1px solid #3a3a3c;border-radius:20px;padding:6px 12px;cursor:pointer;color:#bbb;">제일 저렴한 자재가 뭐야?</span>
-        </div>
-        <div id="ai-msgs" style="max-height:340px;overflow-y:auto;padding:4px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px;"></div>
-        <div style="display:flex;gap:8px;">
-          <input id="ai-input" type="text" placeholder="단가표 기반으로 질문하세요..." onkeydown="if(event.key==='Enter')aiSend()" style="flex:1;padding:11px 13px;background:#2c2c2e;border:1px solid #3a3a3c;border-radius:10px;color:#fff;font-size:14px;outline:none;">
-          <button onclick="aiSend()" style="padding:0 20px;background:#e55a1c;border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;font-size:14px;">전송</button>
-        </div>
-      </div>
     </div>
 
     <button class="restart" onclick="doRestart()">↺ 처음부터 다시</button>
@@ -695,6 +698,7 @@ var rowCnt=0;
     document.getElementById('up-area').style.display='none';
     buildSel();
     document.getElementById('ca').style.display='block';
+    unlockAI();
   }catch(e){}
   addRow();
 })();
@@ -1355,13 +1359,13 @@ function aiUseExample(el){
 
 function aiAddMsg(cls, text){
   var d=document.createElement('div');
-  d.style.maxWidth='85%';d.style.padding='11px 14px';d.style.borderRadius='13px';
-  d.style.fontSize='14px';d.style.whiteSpace='pre-wrap';d.style.lineHeight='1.55';
+  d.style.maxWidth='85%';d.style.padding='10px 13px';d.style.borderRadius='12px';
+  d.style.fontSize='13px';d.style.whiteSpace='pre-wrap';d.style.lineHeight='1.55';
   if(cls==='u'){
-    d.style.alignSelf='flex-end';d.style.background='#e55a1c';d.style.color='#fff';d.style.borderBottomRightRadius='4px';
+    d.style.alignSelf='flex-end';d.style.background='#3b82f6';d.style.color='#fff';d.style.borderBottomRightRadius='4px';
   }else{
-    d.style.alignSelf='flex-start';d.style.background='#2c2c2e';d.style.border='1px solid #3a3a3c';d.style.color='#eee';d.style.borderBottomLeftRadius='4px';
-    if(cls==='typing'){d.style.color='#888';d.style.fontStyle='italic';}
+    d.style.alignSelf='flex-start';d.style.background='#fff';d.style.border='1px solid #bfdbfe';d.style.color='#1e3a5f';d.style.borderBottomLeftRadius='4px';
+    if(cls==='typing'){d.style.color='#93c5fd';d.style.fontStyle='italic';}
   }
   d.textContent=text;
   var box=document.getElementById('ai-msgs');
