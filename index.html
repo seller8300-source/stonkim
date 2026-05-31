@@ -591,10 +591,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <div class="modal-section">
       <div class="modal-section-title">📋 업체 정보 (견적서에 표시)</div>
       <div class="modal-field"><div class="modal-label">업체명</div><input type="text" id="s-company" placeholder="예) 스톤킴 인테리어"></div>
-      <div class="modal-field"><div class="modal-label">담당자</div><input type="text" id="s-person" placeholder="예) 홍길동"></div>
-      <div class="modal-field"><div class="modal-label">연락처</div><input type="text" id="s-phone" placeholder="예) 010-1234-5678"></div>
+      <div class="modal-field"><div class="modal-label">대표자</div><input type="text" id="s-rep" placeholder="예) 홍길동"></div>
+      <div class="modal-field"><div class="modal-label">사업자등록번호</div><input type="text" id="s-bizno" placeholder="예) 123-45-67890"></div>
       <div class="modal-field"><div class="modal-label">주소</div><input type="text" id="s-addr" placeholder="예) 경기도 김포시 대곶면 대곶남로 307"></div>
+      <div class="modal-field"><div class="modal-label">연락처</div><input type="text" id="s-phone" placeholder="예) 1866-1338"></div>
       <div class="modal-field"><div class="modal-label">이메일 / 홈페이지</div><input type="text" id="s-web" placeholder="예) stonekim.kr"></div>
+      <div class="modal-field"><div class="modal-label">담당자</div><input type="text" id="s-person" placeholder="예) 김담당"></div>
+      <div class="modal-field"><div class="modal-label">담당자 연락처</div><input type="text" id="s-persontel" placeholder="예) 010-1234-5678"></div>
     </div>
 
     <div class="modal-section">
@@ -644,7 +647,10 @@ function loadSettings(){
 function openSettings(){
   loadSettings();
   document.getElementById('s-company').value=settings.company||'';
+  document.getElementById('s-rep').value=settings.rep||'';
+  document.getElementById('s-bizno').value=settings.bizno||'';
   document.getElementById('s-person').value=settings.person||'';
+  document.getElementById('s-persontel').value=settings.persontel||'';
   document.getElementById('s-phone').value=settings.phone||'';
   document.getElementById('s-addr').value=settings.addr||'';
   document.getElementById('s-web').value=settings.web||'';
@@ -664,7 +670,10 @@ function closeSettings(){
 }
 function saveSettings(){
   settings.company=document.getElementById('s-company').value.trim();
+  settings.rep=document.getElementById('s-rep').value.trim();
+  settings.bizno=document.getElementById('s-bizno').value.trim();
   settings.person=document.getElementById('s-person').value.trim();
+  settings.persontel=document.getElementById('s-persontel').value.trim();
   settings.phone=document.getElementById('s-phone').value.trim();
   settings.addr=document.getElementById('s-addr').value.trim();
   settings.web=document.getElementById('s-web').value.trim();
@@ -1209,7 +1218,7 @@ function doCalc(m){
     if(!aM){alert('모든 면적을 입력해주세요.');return;}
     details.push({id:id,aM:aM,qty:Math.ceil(aM/ta),tp:tp});
   }
-  cache={details:details, model:(m==='a'&&selProd?selProd.model:'직접입력'), w:tw, h:th};
+  cache={details:details, model:(m==='a'&&selProd?selProd.model:'-'), w:tw, h:th};
   markDone(m==='a'?'n3a':'n3b');
   var rc=document.getElementById('rc');
   rc.classList.add('on');
@@ -1268,16 +1277,20 @@ function printQuote(){
   var dateStr=today.getFullYear()+'.'+(today.getMonth()+1)+'.'+(today.getDate());
   loadSettings();
   var co=settings.company||'STONE KIM';
+  var rep=settings.rep||'';
+  var bizno=settings.bizno||'';
   var pe=settings.person||'';
+  var petel=settings.persontel||'';
   var ph=settings.phone||'1866-1338';
   var ad=settings.addr||'경기도 김포시 대곶면 대곶남로 307 2층';
   var wb=settings.web||'stonekim.kr';
   var terms=settings.terms||'• 본 견적서는 발행일로부터 30일간 유효합니다.\n• 자재비는 부가세 별도입니다.\n• 시공 전 현장 실측을 권장합니다.';
-  var stampImg=settings.stamp?'<img src="'+settings.stamp+'" style="height:70px;width:70px;object-fit:contain;margin-left:12px;vertical-align:middle;">':'';
+  var stampImg=settings.stamp?'<img src="'+settings.stamp+'" style="height:60px;width:60px;object-fit:contain;vertical-align:middle;margin-left:10px;">':'';
   var termsHtml=terms.split('\n').map(function(l){return '<div>'+l+'</div>';}).join('');
 
   var html='<html><head><meta charset="UTF-8"><style>'
     +'*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif;}'
+    +'@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}'
     +'body{padding:30px;color:#111;font-size:13px;}'
     +'.hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #e55a1c;}'
     +'.hd-left{display:flex;align-items:center;}'
@@ -1288,6 +1301,10 @@ function printQuote(){
     +'.info-table{width:100%;border-collapse:collapse;margin-bottom:20px;}'
     +'.info-table td{padding:7px 10px;border:1px solid #e0e0e0;font-size:12px;}'
     +'.info-table td:first-child{background:#f8f8f8;font-weight:600;color:#555;width:70px;}'
+    +'.sup-table{width:100%;border-collapse:collapse;margin-bottom:20px;}'
+    +'.sup-table td{padding:7px 10px;border:1px solid #e0e0e0;font-size:12px;vertical-align:middle;}'
+    +'.sup-table .lbl{background:#f8f8f8;font-weight:600;color:#555;width:90px;white-space:nowrap;}'
+    +'.sup-title{font-size:13px;font-weight:700;color:#e55a1c;margin-bottom:8px;}'
     +'table{width:100%;border-collapse:collapse;margin-bottom:20px;}'
     +'th{background:#e55a1c;color:#fff;padding:9px 10px;text-align:left;font-size:12px;font-weight:600;}'
     +'td{padding:8px 10px;border-bottom:1px solid #f0f0f0;font-size:12px;}'
@@ -1302,7 +1319,6 @@ function printQuote(){
     +'</style></head><body>'
     +'<div class="hd">'
     +'<div class="hd-left"><div class="logo">'+co+'</div></div>'
-    +'<div class="hd-right">'+(pe?pe+'<br>':'')+ph+'<br>'+ad+'<br>'+wb+'</div>'
     +'</div>'
     +'<div class="title">자재 수량 견적서</div>'
     +'<table class="info-table">'
@@ -1316,9 +1332,17 @@ function printQuote(){
     +'<tr class="total-row"><td colspan="4">총 합계 (로스 포함)</td><td>'+tPL.toLocaleString()+'원</td></tr>'
     +'</table>'
     +'<div class="terms-box"><div class="terms-title">안내 사항</div>'+termsHtml+'</div>'
-    +'<div class="sign-area">'
-    +'<div class="sign-box"><div class="sign-box-title">공급자</div>'+stampImg+'<div class="sign-company">'+co+'</div></div>'
-    +'</div>'
+    +'<div class="sup-title">공급자</div>'
+    +'<table class="sup-table">'
+    +'<tr><td class="lbl">업체명</td><td>'+co+stampImg+'</td></tr>'
+    +'<tr><td class="lbl">대표자</td><td>'+(rep||'-')+'</td></tr>'
+    +'<tr><td class="lbl">사업자등록번호</td><td>'+(bizno||'-')+'</td></tr>'
+    +'<tr><td class="lbl">주소</td><td>'+(ad||'-')+'</td></tr>'
+    +'<tr><td class="lbl">연락처</td><td>'+(ph||'-')+'</td></tr>'
+    +'<tr><td class="lbl">이메일</td><td>'+(wb||'-')+'</td></tr>'
+    +'<tr><td class="lbl">담당자</td><td>'+(pe||'-')+'</td></tr>'
+    +'<tr><td class="lbl">담당자 연락처</td><td>'+(petel||'-')+'</td></tr>'
+    +'</table>'
     +'</body></html>';
 
   var w=window.open('','_blank','width=800,height=1000');
