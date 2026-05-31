@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#e55a1c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="자재계산기 끝판왕">
 <title>STONE KIM | 인테리어 건축자재 수량 계산기</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -291,7 +295,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         <span style="font-size:15px;color:#fff;font-weight:800;background:#e55a1c;padding:6px 12px;border-radius:6px;white-space:nowrap;">자재 수량 계산기 끝판왕</span>
       </a>
     </div>
-    <button onclick="openSettings()" style="padding:7px 14px;background:#f5f5f5;border:1.5px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;color:#555;cursor:pointer;white-space:nowrap;">⚙️ 설정</button>
+    <button id="installBtn" onclick="installApp()" style="display:none;padding:7px 14px;background:#e55a1c;border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;">📲 앱 설치</button>
   </header>
 
   <div class="yt">
@@ -1431,6 +1435,82 @@ async function aiSend(){
     typing.remove();
     aiAddMsg('a','⚠️ 서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }
+}
+
+/* ===== 앱 설치 (PWA) ===== */
+(function(){
+  try{
+    var logoEl=document.querySelector('.hdr-left img');
+    var icon=logoEl?logoEl.src:'';
+    var manifest={
+      name:'자재 수량 계산기 끝판왕',
+      short_name:'자재계산기',
+      start_url:'.',
+      display:'standalone',
+      background_color:'#ffffff',
+      theme_color:'#e55a1c',
+      icons: icon?[
+        {src:icon,sizes:'192x192',type:'image/png'},
+        {src:icon,sizes:'512x512',type:'image/png'}
+      ]:[]
+    };
+    var blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var link=document.createElement('link');
+    link.rel='manifest';link.href=url;
+    document.head.appendChild(link);
+    if(icon){
+      var al=document.createElement('link');
+      al.rel='apple-touch-icon';al.href=icon;
+      document.head.appendChild(al);
+    }
+  }catch(e){}
+})();
+
+var deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();
+  deferredPrompt=e;
+  var b=document.getElementById('installBtn');
+  if(b)b.style.display='inline-block';
+});
+window.addEventListener('appinstalled',function(){
+  deferredPrompt=null;
+  var b=document.getElementById('installBtn');
+  if(b)b.style.display='none';
+});
+
+function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent);}
+function isStandalone(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+}
+
+(function(){
+  var b=document.getElementById('installBtn');
+  if(!b)return;
+  // iOS는 beforeinstallprompt가 없으므로, 이미 설치된 게 아니면 버튼 노출(안내용)
+  if(isIOS() && !isStandalone()){
+    b.style.display='inline-block';
+  }
+})();
+
+async function installApp(){
+  // 안드로이드 등: 설치 프롬프트 사용 가능
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    try{ await deferredPrompt.userChoice; }catch(e){}
+    deferredPrompt=null;
+    var b=document.getElementById('installBtn');
+    if(b)b.style.display='none';
+    return;
+  }
+  // iOS: 자동 설치 불가 → 안내
+  if(isIOS()){
+    alert('홈 화면에 추가하는 방법\n\n1. 하단 공유 버튼(□↑)을 누르세요\n2. "홈 화면에 추가"를 선택하세요\n3. "추가"를 누르면 끝!');
+    return;
+  }
+  // 그 외: 브라우저 메뉴 안내
+  alert('브라우저 메뉴에서 "홈 화면에 추가" 또는 "앱 설치"를 선택하세요.');
 }
 </script>
 </body>
