@@ -684,6 +684,7 @@ loadSettings();
 var sp=null, prods=[], selProd=null, cache=null, parsedProds=null;
 var wc={a:0,b:0}, wl={a:[],b:[]}, wm={a:{},b:{}};
 var rowCnt=0;
+var aiPriceTable='', aiHistory=[];
 
 // ===== 초기화 =====
 (function(){
@@ -1342,7 +1343,6 @@ function doRestart(){
 }
 
 /* ===== AI 견적 상담 ===== */
-var aiPriceTable='', aiHistory=[];
 
 function unlockAI(){
   if(typeof prods!=='undefined' && prods && prods.length){
@@ -1377,6 +1377,8 @@ async function aiSend(){
   var input=document.getElementById('ai-input');
   var q=input.value.trim();
   if(!q)return;
+  // 단가표가 비어있으면 prods로 즉석에서 다시 만든다 (재접속/복원 대비)
+  if(!aiPriceTable){ unlockAI(); }
   if(!aiPriceTable){alert('먼저 단가표를 적용해주세요.');return;}
   aiAddMsg('u',q);
   input.value='';
