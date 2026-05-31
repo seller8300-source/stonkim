@@ -1275,6 +1275,8 @@ function printQuote(){
   });
   var today=new Date();
   var dateStr=today.getFullYear()+'.'+(today.getMonth()+1)+'.'+(today.getDate());
+  var validDate=new Date(today.getTime()+30*24*60*60*1000);
+  var validStr=validDate.getFullYear()+'.'+(validDate.getMonth()+1)+'.'+(validDate.getDate());
   loadSettings();
   var co=settings.company||'STONE KIM';
   var rep=settings.rep||'';
@@ -1292,15 +1294,7 @@ function printQuote(){
     +'*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif;}'
     +'@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}'
     +'body{padding:30px;color:#111;font-size:13px;}'
-    +'.hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #e55a1c;}'
-    +'.hd-left{display:flex;align-items:center;}'
-    +'.logo{font-size:22px;font-weight:900;color:#111;}'
-    +'.logo span{color:#e55a1c;}'
-    +'.hd-right{text-align:right;font-size:11px;color:#888;line-height:1.8;}'
-    +'.title{font-size:18px;font-weight:700;margin-bottom:16px;}'
-    +'.info-table{width:100%;border-collapse:collapse;margin-bottom:20px;}'
-    +'.info-table td{padding:7px 10px;border:1px solid #e0e0e0;font-size:12px;}'
-    +'.info-table td:first-child{background:#f8f8f8;font-weight:600;color:#555;width:70px;}'
+    +'.qtitle{text-align:center;border-bottom:2px solid #e55a1c;padding-bottom:14px;margin-bottom:22px;font-size:26px;font-weight:900;letter-spacing:8px;color:#111;}'
     +'.sup-table{width:100%;border-collapse:collapse;margin-bottom:20px;}'
     +'.sup-table td{padding:7px 10px;border:1px solid #e0e0e0;font-size:12px;vertical-align:middle;}'
     +'.sup-table .lbl{background:#f8f8f8;font-weight:600;color:#555;width:90px;white-space:nowrap;}'
@@ -1317,15 +1311,7 @@ function printQuote(){
     +'.sign-box-title{font-size:11px;color:#888;margin-bottom:8px;}'
     +'.sign-company{font-size:13px;font-weight:700;}'
     +'</style></head><body>'
-    +'<div class="hd">'
-    +'<div class="hd-left"><div class="logo">'+co+'</div></div>'
-    +'</div>'
-    +'<div class="title">자재 수량 견적서</div>'
-    +'<table class="info-table">'
-    +'<tr><td>작성일</td><td>'+dateStr+'</td><td>고객명</td><td>'+(name||'-')+'</td></tr>'
-    +'<tr><td>연락처</td><td>'+(tel||'-')+'</td><td>현장주소</td><td>'+(addr||'-')+'</td></tr>'
-    +(memo?'<tr><td>메모</td><td colspan="3">'+memo+'</td></tr>':'')
-    +'</table>'
+    +'<div class="qtitle">견 적 서</div>'
     +'<table>'
     +'<tr><th>면적</th><th>모델명</th><th>사이즈</th><th>수량 (로스'+lr+'% 포함)</th><th>금액</th></tr>'
     +rows
@@ -1342,6 +1328,15 @@ function printQuote(){
     +'<tr><td class="lbl">이메일</td><td>'+(wb||'-')+'</td></tr>'
     +'<tr><td class="lbl">담당자</td><td>'+(pe||'-')+'</td></tr>'
     +'<tr><td class="lbl">담당자 연락처</td><td>'+(petel||'-')+'</td></tr>'
+    +'</table>'
+    +'<div class="sup-title">고객정보</div>'
+    +'<table class="sup-table">'
+    +'<tr><td class="lbl">고객명</td><td>'+(name||'-')+'</td></tr>'
+    +'<tr><td class="lbl">연락처</td><td>'+(tel||'-')+'</td></tr>'
+    +'<tr><td class="lbl">현장주소</td><td>'+(addr||'-')+'</td></tr>'
+    +(memo?'<tr><td class="lbl">메모</td><td>'+memo+'</td></tr>':'')
+    +'<tr><td class="lbl">견적일자</td><td>'+dateStr+'</td></tr>'
+    +'<tr><td class="lbl">유효기간</td><td>'+validStr+'</td></tr>'
     +'</table>'
     +'</body></html>';
 
