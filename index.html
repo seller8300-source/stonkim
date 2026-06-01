@@ -38,8 +38,11 @@ body{background:#eee;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Goth
 .bnr-s{font-size:11px;color:rgba(255,255,255,.8);margin-top:3px;}
 .bnr-btn{padding:9px 18px;background:#fff;border:none;border-radius:8px;color:#e55a1c;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 
-/* 캐치카피 */
-.catch{background:#fff;padding:20px 20px;border-bottom:1px solid #f0f0f0;}
+/* 캐치카피 (히어로) */
+.catch{background:#fff;padding:20px;border-bottom:1px solid #f0f0f0;}
+.hero-card{background:#e55a1c;border-radius:16px;padding:36px 24px;text-align:center;}
+.hero-eyebrow{display:inline-block;background:rgba(255,255,255,.18);color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:18px;}
+.hero-title{font-size:24px;font-weight:800;color:#fff;line-height:1.4;}
 .catch-title{font-size:20px;font-weight:800;color:#111;line-height:1.5;}
 .catch-title em{color:#e55a1c;font-style:normal;}
 
@@ -298,28 +301,10 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <button id="installBtn" onclick="installApp()" style="display:none;padding:7px 14px;background:#e55a1c;border:none;border-radius:8px;font-size:12px;font-weight:700;color:#fff;cursor:pointer;white-space:nowrap;">📲 앱 설치</button>
   </header>
 
-  <div class="yt">
-    <iframe src="https://www.youtube.com/embed/9B1MOtBjBuY?autoplay=1&mute=1&loop=1&playlist=9B1MOtBjBuY&rel=0&modestbranding=1&playsinline=1"
-      allowfullscreen allow="autoplay;encrypted-media" title="스톤킴 소개영상"></iframe>
-    <div class="yt-ov">
-      <div class="yt-t">🔥 휘어지는 타일, 스톤킴 소프트스톤</div>
-      <div class="yt-s">소리를 켜려면 영상을 클릭하세요</div>
-    </div>
-  </div>
-
-  <a class="bnr" href="https://pf.kakao.com/_fBxfxfn/chat" target="_blank">
-    <div>
-      <div class="bnr-t">🪨 스톤킴 제품 무료 견적받기</div>
-      <div class="bnr-s">소프트스톤 · 콕스톤 · 아트브릭 · WPC패널 전 제품</div>
-    </div>
-    <div class="bnr-btn">상담하기 →</div>
-  </a>
-
   <div class="catch">
-    <div class="catch-title">
-      인테리어 자재가<br>
-      <em>공간에 얼마나 필요한지</em><br>
-      10초 안에 계산해 보세요
+    <div class="hero-card">
+      <div class="hero-eyebrow">현장 전문가용 무료 계산기</div>
+      <div class="hero-title">필요한 자재량<br>10초면 계산끝</div>
     </div>
   </div>
 
@@ -557,6 +542,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
     <button class="restart" onclick="doRestart()">↺ 처음부터 다시</button>
     </div>
 
+  </div>
+
+  <div class="yt">
+    <iframe src="https://www.youtube.com/embed/9B1MOtBjBuY?autoplay=1&mute=1&loop=1&playlist=9B1MOtBjBuY&rel=0&modestbranding=1&playsinline=1"
+      allowfullscreen allow="autoplay;encrypted-media" title="스톤킴 소개영상"></iframe>
+    <div class="yt-ov">
+      <div class="yt-t">🔥 휘어지는 타일, 스톤킴 소프트스톤</div>
+      <div class="yt-s">소리를 켜려면 영상을 클릭하세요</div>
+    </div>
   </div>
 
   <footer class="footer">
@@ -1440,8 +1434,20 @@ async function aiSend(){
 /* ===== 앱 설치 (PWA) ===== */
 (function(){
   try{
-    var logoEl=document.querySelector('.hdr-left img');
-    var icon=logoEl?logoEl.src:'';
+    function makeIcon(size){
+      var c=document.createElement('canvas');
+      c.width=size;c.height=size;
+      var x=c.getContext('2d');
+      x.fillStyle='#e55a1c';
+      x.fillRect(0,0,size,size);
+      x.fillStyle='#ffffff';
+      x.font='800 '+Math.round(size*0.5)+'px -apple-system,AppleSDGothicNeo,"Malgun Gothic",sans-serif';
+      x.textAlign='center';x.textBaseline='middle';
+      x.fillText('끝',size/2,size*0.54);
+      return c.toDataURL('image/png');
+    }
+    var icon192=makeIcon(192);
+    var icon512=makeIcon(512);
     var manifest={
       name:'자재 수량 계산기 끝판왕',
       short_name:'자재계산기',
@@ -1449,21 +1455,20 @@ async function aiSend(){
       display:'standalone',
       background_color:'#ffffff',
       theme_color:'#e55a1c',
-      icons: icon?[
-        {src:icon,sizes:'192x192',type:'image/png'},
-        {src:icon,sizes:'512x512',type:'image/png'}
-      ]:[]
+      icons:[
+        {src:icon192,sizes:'192x192',type:'image/png',purpose:'any'},
+        {src:icon512,sizes:'512x512',type:'image/png',purpose:'any'},
+        {src:icon512,sizes:'512x512',type:'image/png',purpose:'maskable'}
+      ]
     };
     var blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
     var url=URL.createObjectURL(blob);
     var link=document.createElement('link');
     link.rel='manifest';link.href=url;
     document.head.appendChild(link);
-    if(icon){
-      var al=document.createElement('link');
-      al.rel='apple-touch-icon';al.href=icon;
-      document.head.appendChild(al);
-    }
+    var al=document.createElement('link');
+    al.rel='apple-touch-icon';al.href=icon192;
+    document.head.appendChild(al);
   }catch(e){}
 })();
 
