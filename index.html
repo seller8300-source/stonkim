@@ -222,6 +222,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .f-tag-item:hover{border-color:#e55a1c;color:#e55a1c;}
 .f-info{border-top:1px solid #222;padding-top:18px;}
 .f-row{display:flex;gap:8px;margin-bottom:8px;font-size:12px;color:#888;}
+.f-branch{margin-bottom:14px;}
+.f-branch-line{border-top:1px solid #2a2a2a;padding-top:12px;}
+.f-badge{display:inline-block;background:#444;color:#fff;font-size:11px;font-weight:700;padding:2px 9px;border-radius:4px;margin-bottom:6px;}
+.f-badge-hq{background:#e55a1c;}
+.f-addr{font-size:12px;color:#aaa;line-height:1.6;}
+.f-tel{font-size:12px;color:#888;margin-top:3px;}
+.f-tel a{color:#fff;text-decoration:underline;}
 .f-cta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:20px;}
 .fcta{padding:12px 8px;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:block;}
 .fcta.kk{background:#FEE500;color:#111;}
@@ -568,8 +575,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <a class="f-tag-item" href="https://stonekim.kr/shopinfo/catalog.html" target="_blank">전체 카탈로그 →</a>
     </div>
     <div class="f-info">
-      <div class="f-row">📍 경기도 김포시 대곶면 대곶남로 307 2층 (스톤킴 쇼룸)</div>
-      <div class="f-row">📞 고객센터 : <a href="tel:1866-1338" style="color:inherit;text-decoration:underline;">1866-1338</a> <span style="font-size:11px;opacity:.6;">(클릭 시 연결됩니다)</span></div>
+      <div class="f-branch">
+        <span class="f-badge f-badge-hq">본사</span>
+        <div class="f-addr">경기도 김포시 대곶면 대곶남로 307 2층 (스톤킴 쇼룸)</div>
+        <div class="f-tel">대표전화 <a href="tel:1866-1338">1866-1338</a></div>
+      </div>
+      <div class="f-branch f-branch-line">
+        <span class="f-badge">부산 대리점</span>
+        <div class="f-addr">부산광역시 기장군 기장읍 기장해안로 98, 3층 337호</div>
+        <div class="f-tel">대표전화 <a href="tel:070-8777-9511">070-8777-9511</a></div>
+      </div>
+      <div class="f-branch f-branch-line">
+        <span class="f-badge">제주 대리점</span>
+        <div class="f-addr">제주특별자치도 제주시 아연로 423</div>
+        <div class="f-tel">대표전화 <a href="tel:010-2113-7427">010-2113-7427</a></div>
+      </div>
     </div>
     <div class="f-cta">
       <a class="fcta kk" href="https://pf.kakao.com/_fBxfxfn/chat" target="_blank">💬 카카오톡 상담</a>
