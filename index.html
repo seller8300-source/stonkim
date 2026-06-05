@@ -98,6 +98,15 @@ select:focus{border-color:#e55a1c;}
 .tab.on{background:#fff3ee;color:#e55a1c;}
 
 /* 업로드 */
+.tpl-guide{background:#fff;border:1px solid #eee;border-radius:12px;padding:16px;margin-bottom:14px;}
+.tpl-guide-t{font-size:13px;font-weight:700;color:#333;margin-bottom:10px;}
+.tpl-tb{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px;}
+.tpl-tb td{padding:6px;border:1px solid #eee;text-align:center;color:#555;}
+.tpl-tb-h td{background:#e55a1c;color:#fff;border-color:#e55a1c;font-weight:700;}
+.tpl-note{font-size:11px;color:#999;line-height:1.6;margin-bottom:14px;}
+.tpl-note b{color:#e55a1c;}
+.tpl-dl{width:100%;background:#e55a1c;color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;}
+.tpl-dl:hover{background:#c0461a;}
 .dzone{border:2px dashed #ddd;border-radius:14px;padding:28px 20px;text-align:center;cursor:pointer;background:#fafafa;transition:all .15s;}
 .dzone:hover,.dzone.over{border-color:#e55a1c;background:#fff8f5;}
 .dz-ic{font-size:32px;margin-bottom:10px;}
@@ -393,6 +402,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
         </div>
 
         <div id="m1">
+          <div class="tpl-guide">
+            <div class="tpl-guide-t">📋 이런 형태로 올려주세요</div>
+            <table class="tpl-tb">
+              <tr class="tpl-tb-h"><td>모델명</td><td>가로(mm)</td><td>세로(mm)</td><td>단가</td></tr>
+              <tr><td>OG-101</td><td>600</td><td>1200</td><td>15,000</td></tr>
+              <tr><td>FS-203</td><td>300</td><td>600</td><td>8,500</td></tr>
+            </table>
+            <div class="tpl-note">※ 기존 단가표는 위 <b>4개 열만 남기고</b> (무게·재고 등은 지우고) 올리면 인식이 정확해요.</div>
+            <button class="tpl-dl" onclick="downloadTemplate()">📥 빈 양식 다운로드 (엑셀)</button>
+          </div>
           <div class="dzone" id="dz"
             onclick="document.getElementById('fi').click()"
             ondragover="dov(event)" ondragleave="dol()" ondrop="ddr(event)">
@@ -994,8 +1013,9 @@ function smartParse(rows){
   // 3. 역할 배정
   var gM=-1, gW=-1, gH=-1, gP=-1, gS=-1;
 
-  // WxH 사이즈 열 (600*1200 형식)
-  var sCol=cols.filter(function(c){return c.sizeScore>0;}).sort(function(a,b){return b.sizeScore-a.sizeScore;});
+  // WxH 사이즈 열 (600*1200 형식) — 실제 WxH 패턴 값이 있는 열만 인정
+  // (가로(mm)/세로(mm)처럼 헤더에 mm만 있고 값은 단일 숫자인 경우는 제외)
+  var sCol=cols.filter(function(c){return c.hasSizes>=2;}).sort(function(a,b){return b.sizeScore-a.sizeScore;});
   if(sCol.length)gS=sCol[0].ci;
 
   // 단가 열: 가장 큰 평균값 가진 숫자 열
@@ -1448,6 +1468,25 @@ async function aiSend(){
   }catch(err){
     typing.remove();
     aiAddMsg('a','⚠️ 서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요.');
+  }
+}
+
+/* ===== 단가표 양식 다운로드 ===== */
+function downloadTemplate(){
+  try{
+    var aoa=[
+      ['모델명','가로(mm)','세로(mm)','단가'],
+      ['OG-101',600,1200,15000],
+      ['FS-203',300,600,8500],
+      ['SG-305',600,600,12000]
+    ];
+    var ws=XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols']=[{wch:18},{wch:12},{wch:12},{wch:14}];
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'단가표');
+    XLSX.writeFile(wb,'스톤킴_단가표_양식.xlsx');
+  }catch(e){
+    alert('양식 다운로드 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.');
   }
 }
 
