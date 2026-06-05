@@ -397,7 +397,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
       <div id="up-area">
         <div class="tabs">
           <button class="tab on" id="tab1" onclick="switchTab(1)">📂 파일 업로드</button>
-          <button class="tab" id="tab2" onclick="switchTab(2)">📋 구글시트 복사</button>
           <button class="tab" id="tab3" onclick="switchTab(3)">✏️ 직접 입력</button>
         </div>
 
@@ -456,18 +455,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
             <div class="parse-err-m" id="perr-msg"></div>
             <span class="parse-retry" onclick="retryFile()">다른 파일 선택하기</span>
           </div>
-        </div>
-
-        <div id="m2" style="display:none;">
-          <div class="paste-guide">
-            <b>📋 구글 시트 / 엑셀에서 복사하는 법</b><br>
-            1. 모델명·사이즈·단가 열 선택<br>
-            2. <b>Ctrl+C</b> → 아래 칸에 <b>Ctrl+V</b><br>
-            → "600*1200" 형식이어도 OK, 헤더 있어도 OK
-          </div>
-          <textarea id="pt" placeholder="구글 시트에서 복사한 내용을 붙여넣으세요"></textarea>
-          <div class="perr" id="perr2"></div>
-          <button class="apply-btn" onclick="applyPaste()">✓ 단가표 적용하기</button>
         </div>
 
         <div id="m3" style="display:none;">
@@ -796,9 +783,11 @@ function reupload(){
 
 // ===== 탭 =====
 function switchTab(t){
-  [1,2,3].forEach(function(i){
-    document.getElementById('tab'+i).classList.toggle('on',i===t);
-    document.getElementById('m'+i).style.display=i===t?'block':'none';
+  [1,3].forEach(function(i){
+    var tb=document.getElementById('tab'+i);
+    var mn=document.getElementById('m'+i);
+    if(tb)tb.classList.toggle('on',i===t);
+    if(mn)mn.style.display=i===t?'block':'none';
   });
 }
 
@@ -1087,18 +1076,6 @@ function smartParse(rows){
     }
   });
   return result;
-}
-
-// ===== 구글시트 붙여넣기 =====
-function applyPaste(){
-  var txt=(document.getElementById('pt').value||'').trim();
-  var err=document.getElementById('perr2');err.classList.remove('on');
-  if(!txt){err.textContent='내용을 붙여넣어 주세요.';err.classList.add('on');return;}
-  var lines=txt.split(/\r?\n/).filter(function(l){return l.trim();});
-  var rows=lines.map(function(l){return l.split(/\t|,/).map(function(c){return c.trim().replace(/^"|"$/g,'');});});
-  var p=smartParse(rows);
-  if(!p||!p.length){err.textContent='인식된 데이터가 없습니다. 모델명·사이즈·단가가 포함됐는지 확인해주세요.';err.classList.add('on');return;}
-  prods=p;applyProds('붙여넣기 ('+p.length+'개)');
 }
 
 // ===== 직접 입력 폼 =====
